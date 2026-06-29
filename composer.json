@@ -58,6 +58,13 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "lint": "php-cs-fixer fix --dry-run --diff",
+        "lint:fix": "php-cs-fixer fix",
+        "analyse": "phpstan analyse",
+        "check": [
+            "@lint",
+            "@analyse"
         ]
     },
     "conflict": {
