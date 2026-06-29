@@ -1,52 +1,78 @@
-# Cache and logs (Symfony2)
+# =============================================================================
+# SECRETS & CONFIGURATION LOCALES
+# =============================================================================
+.env
+.env.local
+.env.*.local
+*.key
+.env.test.local
+
+# =============================================================================
+# DÉPENDANCES & COMPOSER
+# =============================================================================
+vendor/
+node_modules/
+/composer.phar
+
+# =============================================================================
+# BUILD, CACHE & LOGS (SYMFONY MODERNES - v4 à v7)
+# =============================================================================
+/var/
+/public/bundles/
+!/var/cache/
+!/var/log/
+!/var/cache/.gitkeep
+!/var/log/.gitkeep
+
+# Anciennes structures (Symfony 2 / 3) conservées au cas où
 /app/cache/*
 /app/logs/*
+/app/spool/*
+/var/sessions/*
 !app/cache/.gitkeep
 !app/logs/.gitkeep
-
-# Email spool folder
-/app/spool/*
-
-# Cache, session files and logs (Symfony3)
-/var/cache/*
-/var/logs/*
-/var/sessions/*
-!var/cache/.gitkeep
-!var/logs/.gitkeep
 !var/sessions/.gitkeep
 
-# Logs (Symfony4)
-/var/log/*
-!var/log/.gitkeep
-
-# Parameters
-/app/config/parameters.yml
-/app/config/parameters.ini
-
-# Managed by Composer
-/app/bootstrap.php.cache
-/var/bootstrap.php.cache
+# =============================================================================
+# EXÉCUTABLES & ASSISTANCE
+# =============================================================================
 /bin/*
 !bin/console
 !bin/symfony_requirements
-/vendor/
+/.web-server-pid
 
-# Assets and user uploads
+# =============================================================================
+# TESTS, COUVERTURE & QUALITÉ
+# =============================================================================
+/coverage/
+/build/
+/.phpunit.result.cache
+/phpunit.xml
+/app/phpunit.xml
+
+# =============================================================================
+# PARAMÈTRES & DOCTRINE BACKUPS
+# =============================================================================
+/app/config/parameters.yml
+/app/config/parameters.ini
+/app/bootstrap.php.cache
+/var/bootstrap.php.cache
+**/Entity/*~
+
+# =============================================================================
+# ASSETS & DOSSIERS PUBLICS
+# =============================================================================
 /web/bundles/
 /web/uploads/
 
-# PHPUnit
-/app/phpunit.xml
-/phpunit.xml
-
-# Build data
-/build/
-
-# Composer PHAR
-/composer.phar
-
-# Backup entities generated with doctrine:generate:entities command
-**/Entity/*~
-
-# Embedded web-server pid file
-/.web-server-pid
+# =============================================================================
+# SYSTÈME D'EXPLOITATION & IDE (ÉDITEURS DE CODE)
+# =============================================================================
+.DS_Store
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
