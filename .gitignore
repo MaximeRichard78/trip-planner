@@ -1,16 +1,20 @@
+###> symfony/framework-bundle ###
 # =============================================================================
 # SECRETS & CONFIGURATION LOCALES
 # =============================================================================
 .env
 .env.local
+/.env.local.php
 .env.*.local
-*.key
 .env.test.local
+*.key
+/config/secrets/prod/prod.decrypt.private.php
 
 # =============================================================================
 # DÉPENDANCES & COMPOSER
 # =============================================================================
 vendor/
+/vendor/
 node_modules/
 /composer.phar
 
@@ -76,3 +80,4 @@ node_modules/
 *.njsproj
 *.sln
 *.sw?
+###< symfony/framework-bundle ###
