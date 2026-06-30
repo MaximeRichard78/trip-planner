@@ -23,6 +23,7 @@ class RouteCalculator
      * Trie les arrêts : le point final est le plus LOIN du départ.
      *
      * @param array<array{name: string, lat: float, lon: float}> $stops
+     *
      * @return array<array{name: string, lat: float, lon: float}>
      */
     public function orderStopsFar(float $depLat, float $depLon, array $stops): array
@@ -30,6 +31,7 @@ class RouteCalculator
         usort($stops, function ($a, $b) use ($depLat, $depLon) {
             $distA = $this->calculateDistance($depLat, $depLon, $a['lat'], $a['lon']);
             $distB = $this->calculateDistance($depLat, $depLon, $b['lat'], $b['lon']);
+
             return $distA <=> $distB; // croissant → le plus loin en dernier
         });
 
@@ -40,6 +42,7 @@ class RouteCalculator
      * Trie les arrêts : le point final est le plus PROCHE du départ.
      *
      * @param array<array{name: string, lat: float, lon: float}> $stops
+     *
      * @return array<array{name: string, lat: float, lon: float}>
      */
     public function orderStopsNear(float $depLat, float $depLon, array $stops): array
@@ -47,6 +50,7 @@ class RouteCalculator
         usort($stops, function ($a, $b) use ($depLat, $depLon) {
             $distA = $this->calculateDistance($depLat, $depLon, $a['lat'], $a['lon']);
             $distB = $this->calculateDistance($depLat, $depLon, $b['lat'], $b['lon']);
+
             return $distB <=> $distA; // décroissant → le plus proche en dernier
         });
 

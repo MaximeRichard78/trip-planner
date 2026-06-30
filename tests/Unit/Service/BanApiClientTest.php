@@ -15,7 +15,7 @@ class BanApiClientTest extends TestCase
         $fakeApiResponse = [
             'features' => [
                 [
-                    'geometry'   => ['coordinates' => [2.3522, 48.8566]],
+                    'geometry' => ['coordinates' => [2.3522, 48.8566]],
                     'properties' => ['label' => '75000 Paris'],
                 ],
             ],
@@ -40,7 +40,7 @@ class BanApiClientTest extends TestCase
         // Assert
         $this->assertNotNull($result);
         $this->assertEqualsWithDelta(48.8566, $result['lat'], 0.0001);
-        $this->assertEqualsWithDelta(2.3522,  $result['lon'], 0.0001);
+        $this->assertEqualsWithDelta(2.3522, $result['lon'], 0.0001);
         $this->assertSame('75000 Paris', $result['label']);
     }
 
