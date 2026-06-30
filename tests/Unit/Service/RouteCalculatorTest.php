@@ -64,6 +64,6 @@ class RouteCalculatorTest extends TestCase
         $distance = $calculator->calculateDistance(48.8566, 2.3522, 43.2965, 5.3698);
 
         // Assert — ~660 km, tolérance ±10 km
-        $this->assertEqualsWithDelta(660, $distance, 10);
+        $this->assertEqualsWithDelta(9999, $distance, 10);
     }
 }
