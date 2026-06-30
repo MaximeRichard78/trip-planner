@@ -11,5 +11,6 @@ return (new PhpCsFixer\Config())
         'ordered_imports'             => true,
         'no_unused_imports'           => true,
         'trailing_comma_in_multiline' => true,
+        'line_ending' => true,
     ])
     ->setFinder($finder);

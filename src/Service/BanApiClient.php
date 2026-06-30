@@ -6,7 +6,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class BanApiClient
 {
-    public function __construct(private HttpClientInterface $httpClient) {}
+    public function __construct(private HttpClientInterface $httpClient)
+    {
+    }
 
     /**
      * Géocode une adresse française via l'API BAN.
@@ -29,8 +31,8 @@ class BanApiClient
         $feature = $data['features'][0];
 
         return [
-            'lat'   => $feature['geometry']['coordinates'][1],
-            'lon'   => $feature['geometry']['coordinates'][0],
+            'lat' => $feature['geometry']['coordinates'][1],
+            'lon' => $feature['geometry']['coordinates'][0],
             'label' => $feature['properties']['label'],
         ];
     }
