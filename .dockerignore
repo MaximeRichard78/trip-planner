@@ -1,0 +1,9 @@
+.git
+.github
+var/cache/*
+var/log/*
+tests
+.env
+.env.local
+vendor
+node_modules
