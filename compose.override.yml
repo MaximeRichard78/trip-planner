@@ -1,0 +1,22 @@
+# compose.override.yml
+services:
+  app:
+    volumes:
+      - ./:/app
+      - /app/vendor
+    environment:
+      APP_ENV: dev
+      APP_DEBUG: "1"
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        set -e
+        composer install --no-interaction
+        php bin/console cache:clear --env=dev || true
+        exec frankenphp run --config /etc/caddy/Caddyfile
+    healthcheck:
+      test: ["CMD", "curl", "-s", "-o", "/dev/null", "http://localhost:80"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
