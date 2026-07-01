@@ -1,0 +1,11 @@
+{
+    frankenphp
+    servers {
+        protocols h1 h2
+    }
+}
+
+:8080 {
+    root * /app/public
+    php_server
+}
