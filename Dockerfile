@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:latest-alpine
+FROM dunglas/frankenphp:1-php8.4-alpine
 
 RUN install-php-extensions \
     pdo_pgsql \
@@ -13,7 +13,6 @@ WORKDIR /app
 
 COPY . /app
 
-# .env stub pour la phase de build uniquement
 RUN echo "APP_ENV=prod" > /app/.env && \
     echo "APP_SECRET=placeholder" >> /app/.env && \
     echo "DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder" >> /app/.env
