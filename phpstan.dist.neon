@@ -4,7 +4,7 @@ parameters:
         - src
     excludePaths:
         analyseAndScan:
-            - var
-            - vendor
+            - var (?)
+            - vendor (?)
     ignoreErrors:
         - '#Property App\\Entity\\.*::\$id \(int\|null\) is never assigned int so it can be removed from the property type\.#'
