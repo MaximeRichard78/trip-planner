@@ -41,7 +41,7 @@ class Trajet
 
     public function __construct()
     {
-        $this->arrets = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->arrets = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 

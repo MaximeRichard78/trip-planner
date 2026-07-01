@@ -20,13 +20,13 @@ class TrajetController extends AbstractController
     {
         if ($request->isMethod('POST')) {
             $label = $request->request->get('depart_label', '');
-            $lat   = $request->request->get('depart_lat', '');
-            $lon   = $request->request->get('depart_lon', '');
+            $lat = $request->request->get('depart_lat', '');
+            $lon = $request->request->get('depart_lon', '');
 
             $request->getSession()->set('depart', [
                 'label' => $label,
-                'lat'   => (float) $lat,
-                'lon'   => (float) $lon,
+                'lat' => (float) $lat,
+                'lon' => (float) $lon,
             ]);
 
             return $this->redirectToRoute('app_arrets');
@@ -47,22 +47,22 @@ class TrajetController extends AbstractController
         }
 
         if ($request->isMethod('POST')) {
-            $mode   = $request->request->get('mode', 'loin');
+            $mode = $request->request->get('mode', 'loin');
             $labels = $request->request->all('arret_label');
-            $lats   = $request->request->all('arret_lat');
-            $lons   = $request->request->all('arret_lon');
-            $noms   = $request->request->all('arret_nom');
+            $lats = $request->request->all('arret_lat');
+            $lons = $request->request->all('arret_lon');
+            $noms = $request->request->all('arret_nom');
 
             $depart = $request->getSession()->get('depart');
 
             $arrets = [];
             foreach ($labels as $i => $label) {
-                if ($label !== '' && $lats[$i] !== '' && $lons[$i] !== '') {
+                if ('' !== $label && '' !== $lats[$i] && '' !== $lons[$i]) {
                     $arrets[] = [
-                        'label'    => $label,
-                        'nom'      => $noms[$i] ?? '',
-                        'lat'      => (float) $lats[$i],
-                        'lon'      => (float) $lons[$i],
+                        'label' => $label,
+                        'nom' => $noms[$i] ?? '',
+                        'lat' => (float) $lats[$i],
+                        'lon' => (float) $lons[$i],
                         'distance' => $calculator->calculateDistance(
                             $depart['lat'],
                             $depart['lon'],
@@ -75,17 +75,17 @@ class TrajetController extends AbstractController
 
             // Tri selon le mode
             usort($arrets, fn ($a, $b) => $a['distance'] <=> $b['distance']);
-            if ($mode === 'loin') {
-                $final    = array_pop($arrets);
+            if ('loin' === $mode) {
+                $final = array_pop($arrets);
                 $arrets[] = $final;
             } else {
-                $final    = array_shift($arrets);
+                $final = array_shift($arrets);
                 $arrets[] = $final;
             }
 
             // Sauvegarde en BDD
             $trajet = new Trajet();
-            $trajet->setTitre($depart['label'] . ' → ' . end($arrets)['label']);
+            $trajet->setTitre($depart['label'].' → '.end($arrets)['label']);
             $trajet->setMode($mode);
             $trajet->setDepartLabel($depart['label']);
             $trajet->setDepartLat($depart['lat']);
@@ -128,7 +128,7 @@ class TrajetController extends AbstractController
         return $this->render('trajet/feuille_de_route.html.twig', [
             'depart' => $request->getSession()->get('depart'),
             'arrets' => $request->getSession()->get('arrets', []),
-            'mode'   => $request->getSession()->get('mode', 'loin'),
+            'mode' => $request->getSession()->get('mode', 'loin'),
         ]);
     }
 
@@ -139,17 +139,17 @@ class TrajetController extends AbstractController
         usort($arrets, fn ($a, $b) => $a->getPosition() <=> $b->getPosition());
 
         $arretsData = array_map(fn ($a) => [
-            'label'    => $a->getLabel(),
-            'nom'      => $a->getNom(),
-            'lat'      => $a->getLat(),
-            'lon'      => $a->getLon(),
+            'label' => $a->getLabel(),
+            'nom' => $a->getNom(),
+            'lat' => $a->getLat(),
+            'lon' => $a->getLon(),
             'distance' => $a->getDistance(),
         ], $arrets);
 
         return $this->render('trajet/feuille_de_route.html.twig', [
             'depart' => ['label' => $trajet->getDepartLabel()],
             'arrets' => $arretsData,
-            'mode'   => $trajet->getMode(),
+            'mode' => $trajet->getMode(),
         ]);
     }
 
