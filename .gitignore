@@ -3,6 +3,7 @@
 # SECRETS & CONFIGURATION LOCALES
 # =============================================================================
 .env
+/.env.dev
 .env.local
 /.env.local.php
 .env.*.local
