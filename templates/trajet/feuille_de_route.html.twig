@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Étape 3 — Feuille de route{% endblock %}
+
+{% block body %}
+<h2>Étape 3 : Feuille de route</h2>
+
+<p>
+    Mode choisi :
+    {% if mode == 'loin' %}
+        🏁 <strong>Loin</strong> — l'arrêt le plus éloigné est en dernier
+    {% else %}
+        🏠 <strong>Proche</strong> — l'arrêt le plus proche est en dernier
+    {% endif %}
+</p>
+
+<p><strong>Départ :</strong> {{ depart.label }}</p>
+
+<hr>
+
+<ol>
+    {% for arret in arrets %}
+    <li style="margin-bottom: 1.5rem;">
+        <strong>{{ arret.nom }}</strong><br>
+        <span style="color: #555;">{{ arret.label }}</span><br>
+        <small style="color: #999;">{{ arret.distance|number_format(1, ',', ' ') }} km du départ</small>
+        <br><br>
+        <button
+            class="btn-nav"
+            data-lat="{{ arret.lat }}"
+            data-lon="{{ arret.lon }}"
+            data-service="waze"
+            style="background:#00bcd4; color:white; border:none; padding:0.5rem 1rem; border-radius:4px; margin-right:0.5rem;">
+            🚗 Waze
+        </button>
+        <button
+            class="btn-nav"
+            data-lat="{{ arret.lat }}"
+            data-lon="{{ arret.lon }}"
+            data-service="gmaps"
+            style="background:#4caf50; color:white; border:none; padding:0.5rem 1rem; border-radius:4px;">
+            🗺️ Google Maps
+        </button>
+    </li>
+    {% endfor %}
+</ol>
+
+<hr>
+<a href="{{ path('app_depart') }}">← Recommencer un trajet</a>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.querySelectorAll('.btn-nav').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const lat     = btn.dataset.lat;
+        const lon     = btn.dataset.lon;
+        const service = btn.dataset.service;
+
+        if (!navigator.geolocation) {
+            alert('La géolocalisation n\'est pas supportée par votre navigateur.');
+            return;
+        }
+
+        btn.textContent = '📍 Localisation...';
+        btn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                const originLat = position.coords.latitude;
+                const originLon = position.coords.longitude;
+                let url;
+
+                if (service === 'waze') {
+                    // Waze : navigate vers la destination (depuis position GPS auto)
+                    url = `https://waze.com/ul?ll=${lat},${lon}&navigate=yes`;
+                } else {
+                    // Google Maps : depuis position actuelle vers destination
+                    url = `https://www.google.com/maps/dir/${originLat},${originLon}/${lat},${lon}`;
+                }
+
+                window.open(url, '_blank');
+                btn.disabled = false;
+
+                if (service === 'waze') {
+                    btn.textContent = '🚗 Waze';
+                } else {
+                    btn.textContent = '🗺️ Google Maps';
+                }
+            },
+            error => {
+                alert('Impossible de récupérer votre position. Vérifiez les permissions de localisation.');
+                btn.disabled = false;
+                if (service === 'waze') {
+                    btn.textContent = '🚗 Waze';
+                } else {
+                    btn.textContent = '🗺️ Google Maps';
+                }
+            },
+            { timeout: 10000 }
+        );
+    });
+});
+</script>
+{% endblock %}

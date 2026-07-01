@@ -1,16 +1,21 @@
+###> symfony/framework-bundle ###
 # =============================================================================
 # SECRETS & CONFIGURATION LOCALES
 # =============================================================================
 .env
+/.env.dev
 .env.local
+/.env.local.php
 .env.*.local
-*.key
 .env.test.local
+*.key
+/config/secrets/prod/prod.decrypt.private.php
 
 # =============================================================================
 # DÉPENDANCES & COMPOSER
 # =============================================================================
 vendor/
+/vendor/
 node_modules/
 /composer.phar
 
@@ -76,3 +81,17 @@ node_modules/
 *.njsproj
 *.sln
 *.sw?
+###< symfony/framework-bundle ###
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
