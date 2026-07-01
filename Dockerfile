@@ -12,10 +12,12 @@ RUN install-php-extensions \
 # Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+RUN echo "APP_ENV=prod" > .env
+
 WORKDIR /app
 
 # Config FrankenPHP / Caddy
-ENV SERVER_NAME=:80
+ENV SERVER_NAME=:8080
 ENV APP_ENV=prod
 
 COPY . /app
@@ -25,4 +27,4 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 
 RUN php bin/console cache:clear --env=prod --no-debug || true
 
-EXPOSE 80
+EXPOSE 8080
