@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Étape 1 — Adresse de départ{% endblock %}
+
+{% block body %}
+<h2>Étape 1 : Adresse de départ</h2>
+
+<form method="POST" action="{{ path('app_depart') }}" id="form-depart">
+    <label for="depart_label">Adresse de départ :</label><br>
+    <input
+        type="text"
+        id="depart_label"
+        name="depart_label"
+        autocomplete="off"
+        placeholder="Ex : 12 rue de la Paix, Paris"
+        required
+        style="width: 400px;"
+    >
+    <input type="hidden" id="depart_lat" name="depart_lat">
+    <input type="hidden" id="depart_lon" name="depart_lon">
+
+    <ul id="suggestions" style="
+        list-style: none; padding: 0; margin: 0;
+        border: 1px solid #ccc; max-width: 400px;
+        display: none; position: absolute; background: white; z-index: 10;
+    "></ul>
+
+    <br><br>
+    <button type="submit" id="btn-suivant" disabled>Suivant →</button>
+</form>
+
+{% if trajets is not empty %}
+<hr>
+<h3>📋 Trajets sauvegardés</h3>
+<table style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr style="background: #f5f5f5;">
+            <th style="text-align:left; padding: 0.5rem;">Trajet</th>
+            <th style="text-align:left; padding: 0.5rem;">Mode</th>
+            <th style="text-align:left; padding: 0.5rem;">Date</th>
+            <th style="padding: 0.5rem;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trajet in trajets %}
+        <tr style="border-top: 1px solid #ddd;">
+            <td style="padding: 0.5rem;">{{ trajet.titre }}</td>
+            <td style="padding: 0.5rem;">
+                {% if trajet.mode == 'loin' %}🏁 Loin{% else %}🏠 Proche{% endif %}
+            </td>
+            <td style="padding: 0.5rem;">{{ trajet.createdAt|date('d/m/Y H:i', 'Europe/Paris') }}</td>
+            <td style="padding: 0.5rem; text-align:center;">
+                <a href="{{ path('app_trajet_voir', {id: trajet.id}) }}"
+                   style="background:#2196f3; color:white; padding:0.3rem 0.7rem; border-radius:4px; text-decoration:none;">
+                    👁 Voir
+                </a>
+                <form method="POST" action="{{ path('app_trajet_supprimer', {id: trajet.id}) }}"
+                      style="display:inline;"
+                      onsubmit="return confirm('Supprimer ce trajet ?')">
+                    <button type="submit"
+                            style="background:#f44336; color:white; border:none; padding:0.3rem 0.7rem; border-radius:4px; cursor:pointer;">
+                        🗑 Supprimer
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+const input       = document.getElementById('depart_label');
+const latField    = document.getElementById('depart_lat');
+const lonField    = document.getElementById('depart_lon');
+const suggestions = document.getElementById('suggestions');
+const btnSuivant  = document.getElementById('btn-suivant');
+
+let debounceTimer;
+
+input.addEventListener('input', () => {
+    latField.value = '';
+    lonField.value = '';
+    btnSuivant.disabled = true;
+
+    clearTimeout(debounceTimer);
+    const query = input.value.trim();
+
+    if (query.length < 3) {
+        suggestions.style.display = 'none';
+        suggestions.innerHTML = '';
+        return;
+    }
+
+    debounceTimer = setTimeout(() => {
+        fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5`)
+            .then(r => r.json())
+            .then(data => {
+                suggestions.innerHTML = '';
+                if (!data.features || data.features.length === 0) {
+                    suggestions.style.display = 'none';
+                    return;
+                }
+                data.features.forEach(feature => {
+                    const li = document.createElement('li');
+                    li.textContent = feature.properties.label;
+                    li.style.cssText = 'padding: 6px 10px; cursor: pointer;';
+                    li.addEventListener('mouseover', () => li.style.background = '#f0f0f0');
+                    li.addEventListener('mouseout',  () => li.style.background = 'white');
+                    li.addEventListener('click', () => {
+                        input.value    = feature.properties.label;
+                        latField.value = feature.geometry.coordinates[1];
+                        lonField.value = feature.geometry.coordinates[0];
+                        suggestions.style.display = 'none';
+                        suggestions.innerHTML = '';
+                        btnSuivant.disabled = false;
+                    });
+                    suggestions.appendChild(li);
+                });
+                suggestions.style.display = 'block';
+            });
+    }, 300);
+});
+
+document.addEventListener('click', e => {
+    if (!e.target.closest('#form-depart')) {
+        suggestions.style.display = 'none';
+    }
+});
+
+document.getElementById('form-depart').addEventListener('submit', e => {
+    if (!latField.value || !lonField.value) {
+        e.preventDefault();
+        alert('Veuillez sélectionner une adresse dans la liste de suggestions.');
+    }
+});
+</script>
+{% endblock %}
